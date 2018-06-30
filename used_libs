@@ -2,3 +2,4 @@ libc.so.6
 libdl.so.2
 libmpi.so.20
 libpthread.so.0
+libpython3.7m.so.1.0
