@@ -1,0 +1,3 @@
+mkdir -p %{buildroot}/usr/share/doc/mpi4py
+cp -r demo %{buildroot}/usr/share/doc/mpi4py
+cp -r docs %{buildroot}/usr/share/doc/mpi4py

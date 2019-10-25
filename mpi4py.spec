@@ -4,7 +4,7 @@
 #
 Name     : mpi4py
 Version  : 3.0.2
-Release  : 15
+Release  : 16
 URL      : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.2.tar.gz
 Source0  : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.2.tar.gz
 Summary  : Python bindings for MPI
@@ -19,30 +19,28 @@ BuildRequires : openmpi-dev
 
 %description
 ==============
-MPI for Python
-==============
-.. image::  https://travis-ci.org/mpi4py/mpi4py.svg?branch=master
-:target: https://travis-ci.org/mpi4py/mpi4py
-.. image::  https://circleci.com/gh/mpi4py/mpi4py.svg?style=shield
-:target: https://circleci.com/gh/mpi4py/mpi4py
-.. image::  https://ci.appveyor.com/api/projects/status/whh5xovp217h0f7n?svg=true
-:target: https://ci.appveyor.com/project/mpi4py/mpi4py
-.. image::  https://scan.coverity.com/projects/mpi4py-mpi4py/badge.svg
-:target: https://scan.coverity.com/projects/mpi4py-mpi4py
-.. image::  https://codecov.io/gh/mpi4py/mpi4py/branch/master/graph/badge.svg
-:target: https://codecov.io/gh/mpi4py/mpi4py
-.. image::  https://readthedocs.org/projects/mpi4py/badge/?version=latest
-:target: https://mpi4py.readthedocs.org/en/latest/
+        
+        This package provides Python bindings for the **Message Passing
+        Interface** (MPI_) standard. It is implemented on top of the MPI-1/2/3
+        specification and exposes an API which grounds on the standard MPI-2
+        C++ bindings.
 
 %package dev
 Summary: dev components for the mpi4py package.
 Group: Development
 Provides: mpi4py-devel = %{version}-%{release}
 Requires: mpi4py = %{version}-%{release}
-Requires: mpi4py = %{version}-%{release}
 
 %description dev
 dev components for the mpi4py package.
+
+
+%package doc
+Summary: doc components for the mpi4py package.
+Group: Documentation
+
+%description doc
+doc components for the mpi4py package.
 
 
 %package license
@@ -79,8 +77,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1570999106
-# -Werror is for werrorists
+export SOURCE_DATE_EPOCH=1572018665
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
@@ -98,6 +95,11 @@ python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
+## install_append content
+mkdir -p %{buildroot}/usr/share/doc/mpi4py
+cp -r demo %{buildroot}/usr/share/doc/mpi4py
+cp -r docs %{buildroot}/usr/share/doc/mpi4py
+## install_append end
 
 %files
 %defattr(-,root,root,-)
@@ -107,6 +109,10 @@ echo ----[ mark ]----
 /usr/lib/python3.7/site-packages/mpi4py/include/mpi4py/mpi4py.MPI.h
 /usr/lib/python3.7/site-packages/mpi4py/include/mpi4py/mpi4py.MPI_api.h
 /usr/lib/python3.7/site-packages/mpi4py/include/mpi4py/mpi4py.h
+
+%files doc
+%defattr(0644,root,root,0755)
+%doc /usr/share/doc/mpi4py/*
 
 %files license
 %defattr(0644,root,root,0755)
