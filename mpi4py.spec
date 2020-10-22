@@ -4,7 +4,7 @@
 #
 Name     : mpi4py
 Version  : 3.0.3
-Release  : 22
+Release  : 23
 URL      : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
 Source0  : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
 Summary  : Python bindings for MPI
@@ -19,26 +19,16 @@ BuildRequires : openmpi-dev
 
 %description
 ==============
-MPI for Python
-==============
-.. image::  https://travis-ci.org/mpi4py/mpi4py.svg?branch=master
-:target: https://travis-ci.org/mpi4py/mpi4py
-.. image::  https://circleci.com/gh/mpi4py/mpi4py.svg?style=shield
-:target: https://circleci.com/gh/mpi4py/mpi4py
-.. image::  https://ci.appveyor.com/api/projects/status/whh5xovp217h0f7n?svg=true
-:target: https://ci.appveyor.com/project/mpi4py/mpi4py
-.. image::  https://scan.coverity.com/projects/mpi4py-mpi4py/badge.svg
-:target: https://scan.coverity.com/projects/mpi4py-mpi4py
-.. image::  https://codecov.io/gh/mpi4py/mpi4py/branch/master/graph/badge.svg
-:target: https://codecov.io/gh/mpi4py/mpi4py
-.. image::  https://readthedocs.org/projects/mpi4py/badge/?version=latest
-:target: https://mpi4py.readthedocs.org/en/latest/
+        
+        This package provides Python bindings for the **Message Passing
+        Interface** (MPI_) standard. It is implemented on top of the MPI-1/2/3
+        specification and exposes an API which grounds on the standard MPI-2
+        C++ bindings.
 
 %package dev
 Summary: dev components for the mpi4py package.
 Group: Development
 Provides: mpi4py-devel = %{version}-%{release}
-Requires: mpi4py = %{version}-%{release}
 Requires: mpi4py = %{version}-%{release}
 
 %description dev
@@ -89,12 +79,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1583174566
-# -Werror is for werrorists
+export SOURCE_DATE_EPOCH=1603396393
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
-export FCFLAGS="$CFLAGS -fno-lto "
-export FFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
@@ -104,6 +93,7 @@ export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mpi4py
 cp %{_builddir}/mpi4py-3.0.3/LICENSE.rst %{buildroot}/usr/share/package-licenses/mpi4py/21edae501e74d2238beb8de11f7cc57c76ec35d8
+cp %{_builddir}/mpi4py-3.0.3/docs/LICENSE.html %{buildroot}/usr/share/package-licenses/mpi4py/9a87cc8595ac41877df310100498725e846c2791
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
@@ -130,6 +120,7 @@ cp -r docs %{buildroot}/usr/share/doc/mpi4py
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/mpi4py/21edae501e74d2238beb8de11f7cc57c76ec35d8
+/usr/share/package-licenses/mpi4py/9a87cc8595ac41877df310100498725e846c2791
 
 %files python
 %defattr(-,root,root,-)
