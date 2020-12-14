@@ -4,7 +4,7 @@
 #
 Name     : mpi4py
 Version  : 3.0.3
-Release  : 25
+Release  : 26
 URL      : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
 Source0  : https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
 Summary  : Python bindings for MPI
@@ -16,6 +16,7 @@ Requires: mpi4py-python3 = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
 BuildRequires : openmpi-dev
+BuildRequires : python3-dev
 
 %description
 ==============
@@ -79,7 +80,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1603396393
+export SOURCE_DATE_EPOCH=1607985844
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
@@ -109,9 +110,9 @@ cp -r docs %{buildroot}/usr/share/doc/mpi4py
 
 %files dev
 %defattr(-,root,root,-)
-/usr/lib/python3.8/site-packages/mpi4py/include/mpi4py/mpi4py.MPI.h
-/usr/lib/python3.8/site-packages/mpi4py/include/mpi4py/mpi4py.MPI_api.h
-/usr/lib/python3.8/site-packages/mpi4py/include/mpi4py/mpi4py.h
+/usr/lib/python3.9/site-packages/mpi4py/include/mpi4py/mpi4py.MPI.h
+/usr/lib/python3.9/site-packages/mpi4py/include/mpi4py/mpi4py.MPI_api.h
+/usr/lib/python3.9/site-packages/mpi4py/include/mpi4py/mpi4py.h
 
 %files doc
 %defattr(0644,root,root,0755)
