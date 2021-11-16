@@ -1,5 +1,5 @@
 PKG_NAME := mpi4py
-URL = https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+URL = https://github.com/mpi4py/mpi4py/releases/download/3.1.2/mpi4py-3.1.2.tar.gz
 ARCHIVES = 
 
 include ../common/Makefile.common
