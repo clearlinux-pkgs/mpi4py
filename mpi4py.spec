@@ -4,7 +4,7 @@
 #
 Name     : mpi4py
 Version  : 3.1.2
-Release  : 37
+Release  : 38
 URL      : https://github.com/mpi4py/mpi4py/releases/download/3.1.2/mpi4py-3.1.2.tar.gz
 Source0  : https://github.com/mpi4py/mpi4py/releases/download/3.1.2/mpi4py-3.1.2.tar.gz
 Summary  : Python bindings for MPI
@@ -16,8 +16,8 @@ Requires: mpi4py-python3 = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-distutils3
 BuildRequires : openmpi-dev
-BuildRequires : setuptools
-BuildRequires : wheel
+BuildRequires : pypi(setuptools)
+BuildRequires : pypi(wheel)
 
 %description
 ==============
@@ -94,21 +94,21 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1637090770
+export SOURCE_DATE_EPOCH=1641850818
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
 export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
-python3 setup.py build
+python3 -m build --wheel --skip-dependency-check --no-isolation
 
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mpi4py
 cp %{_builddir}/mpi4py-3.1.2/LICENSE.rst %{buildroot}/usr/share/package-licenses/mpi4py/b3a503c1c32c5015e6c9fd9ff6f97a93c611aaeb
-python3 -tt setup.py build  install --root=%{buildroot}
+pip install --root=%{buildroot} --no-deps --ignore-installed dist/*.whl
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
