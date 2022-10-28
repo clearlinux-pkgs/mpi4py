@@ -4,12 +4,14 @@
 #
 Name     : mpi4py
 Version  : 3.1.2
-Release  : 39
+Release  : 40
 URL      : https://github.com/mpi4py/mpi4py/releases/download/3.1.2/mpi4py-3.1.2.tar.gz
 Source0  : https://github.com/mpi4py/mpi4py/releases/download/3.1.2/mpi4py-3.1.2.tar.gz
 Summary  : Python bindings for MPI
 Group    : Development/Tools
 License  : BSD-2-Clause
+Requires: mpi4py-filemap = %{version}-%{release}
+Requires: mpi4py-lib = %{version}-%{release}
 Requires: mpi4py-license = %{version}-%{release}
 Requires: mpi4py-python = %{version}-%{release}
 Requires: mpi4py-python3 = %{version}-%{release}
@@ -18,6 +20,7 @@ BuildRequires : buildreq-distutils3
 BuildRequires : openmpi-dev
 BuildRequires : pypi(setuptools)
 BuildRequires : pypi(wheel)
+BuildRequires : pypi-cython
 
 %description
 ==============
@@ -43,6 +46,7 @@ MPI for Python
 %package dev
 Summary: dev components for the mpi4py package.
 Group: Development
+Requires: mpi4py-lib = %{version}-%{release}
 Provides: mpi4py-devel = %{version}-%{release}
 Requires: mpi4py = %{version}-%{release}
 
@@ -56,6 +60,24 @@ Group: Documentation
 
 %description doc
 doc components for the mpi4py package.
+
+
+%package filemap
+Summary: filemap components for the mpi4py package.
+Group: Default
+
+%description filemap
+filemap components for the mpi4py package.
+
+
+%package lib
+Summary: lib components for the mpi4py package.
+Group: Libraries
+Requires: mpi4py-license = %{version}-%{release}
+Requires: mpi4py-filemap = %{version}-%{release}
+
+%description lib
+lib components for the mpi4py package.
 
 
 %package license
@@ -78,6 +100,7 @@ python components for the mpi4py package.
 %package python3
 Summary: python3 components for the mpi4py package.
 Group: Default
+Requires: mpi4py-filemap = %{version}-%{release}
 Requires: python3-core
 Provides: pypi(mpi4py)
 
@@ -88,13 +111,19 @@ python3 components for the mpi4py package.
 %prep
 %setup -q -n mpi4py-3.1.2
 cd %{_builddir}/mpi4py-3.1.2
+pushd ..
+cp -a mpi4py-3.1.2 buildavx2
+popd
 
 %build
+## build_prepend content
+rm src/mpi4py.MPI.c
+## build_prepend end
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1641850818
+export SOURCE_DATE_EPOCH=1666969630
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
@@ -102,34 +131,63 @@ export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 -m build --wheel --skip-dependency-check --no-isolation
+pushd ../buildavx2/
+## build_prepend content
+rm src/mpi4py.MPI.c
+## build_prepend end
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+python3 -m build --wheel --skip-dependency-check --no-isolation
+
+popd
 
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mpi4py
-cp %{_builddir}/mpi4py-3.1.2/LICENSE.rst %{buildroot}/usr/share/package-licenses/mpi4py/b3a503c1c32c5015e6c9fd9ff6f97a93c611aaeb
+cp %{_builddir}/mpi4py-%{version}/LICENSE.rst %{buildroot}/usr/share/package-licenses/mpi4py/b3a503c1c32c5015e6c9fd9ff6f97a93c611aaeb || :
 pip install --root=%{buildroot} --no-deps --ignore-installed dist/*.whl
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+pip install --root=%{buildroot}-v3 --no-deps --ignore-installed dist/*.whl
+popd
 ## install_append content
 mkdir -p %{buildroot}/usr/share/doc/mpi4py
 cp -r demo %{buildroot}/usr/share/doc/mpi4py
 cp -r docs %{buildroot}/usr/share/doc/mpi4py
 ## install_append end
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
 
 %files dev
 %defattr(-,root,root,-)
-/usr/lib/python3.10/site-packages/mpi4py/include/mpi4py/mpi4py.MPI.h
-/usr/lib/python3.10/site-packages/mpi4py/include/mpi4py/mpi4py.MPI_api.h
-/usr/lib/python3.10/site-packages/mpi4py/include/mpi4py/mpi4py.h
+/usr/lib/python3.11/site-packages/mpi4py/include/mpi4py/mpi4py.MPI.h
+/usr/lib/python3.11/site-packages/mpi4py/include/mpi4py/mpi4py.MPI_api.h
+/usr/lib/python3.11/site-packages/mpi4py/include/mpi4py/mpi4py.h
 
 %files doc
 %defattr(0644,root,root,0755)
 %doc /usr/share/doc/mpi4py/*
+
+%files filemap
+%defattr(-,root,root,-)
+/usr/share/clear/filemap/filemap-mpi4py
+
+%files lib
+%defattr(-,root,root,-)
+/usr/share/clear/optimized-elf/other*
 
 %files license
 %defattr(0644,root,root,0755)
