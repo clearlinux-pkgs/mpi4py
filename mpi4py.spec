@@ -5,7 +5,7 @@
 #
 Name     : mpi4py
 Version  : 3.1.5
-Release  : 43
+Release  : 44
 URL      : https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
 Source0  : https://github.com/mpi4py/mpi4py/releases/download/3.1.5/mpi4py-3.1.5.tar.gz
 Summary  : Python bindings for MPI
